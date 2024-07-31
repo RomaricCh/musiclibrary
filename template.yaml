@@ -35,7 +35,7 @@ Resources:
       # Chemin du handler de la lambda
       Handler: src.handler.find_by_author_and_title
       # Runtime utilisé pour l'exécution de la lambda
-      Runtime: python3.7
+      Runtime: python3.9
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
       # Droits IAM affectés à la l'exécution de la lambda
       Policies:
@@ -58,7 +58,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src.handler.create_song
-      Runtime: python3.7
+      Runtime: python3.9
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -78,7 +78,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src.handler.delete_song
-      Runtime: python3.7
+      Runtime: python3.9
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -98,7 +98,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src.handler.import_csv
-      Runtime: python3.7
+      Runtime: python3.9
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -114,7 +114,7 @@ Resources:
     Properties:
       FunctionName: !Sub "musiclibrary-${StageName}-AuthorizerFunction"
       Handler: src.handler.authorizer
-      Runtime: python3.7
+      Runtime: python3.9
       Policies:
         - CloudWatchPutMetricPolicy: { }
 
