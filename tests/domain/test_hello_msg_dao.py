@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-
-from src.core.resources_mgr import ResourcesMgr
-from src.domain.hello_msg import HelloMsg
-from src.domain.hello_msg_dao import HelloMsgDao
+from core.resources_mgr import ResourcesMgr
+from domain.hello_msg import HelloMsg
+from domain.hello_msg_dao import HelloMsgDao
 
 resources_mgr = ResourcesMgr()
 

@@ -1,9 +1,9 @@
-from src.domain.hello_msg import HelloMsg
-from src.domain.hello_msg_dao import HelloMsgDao
-from src.core.resources_mgr import ResourcesMgr
-
-import logging
 import json
+import logging
+
+from core.resources_mgr import ResourcesMgr
+from domain.hello_msg import HelloMsg
+from domain.hello_msg_dao import HelloMsgDao
 
 logger = logging.getLogger()
 print("create dynamodb resources")

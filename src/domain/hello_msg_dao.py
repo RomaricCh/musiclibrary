@@ -1,6 +1,6 @@
 import logging
 
-from src.domain.hello_msg import HelloMsg
+from domain.hello_msg import HelloMsg
 
 logger = logging.getLogger()
 
