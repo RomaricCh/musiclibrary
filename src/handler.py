@@ -1,16 +1,18 @@
 import json
 import logging
 
-from core.resources_mgr import ResourcesMgr
-from domain.hello_msg import HelloMsg
-from domain.hello_msg_dao import HelloMsgDao
+from aws_lambda_powertools.utilities.typing import LambdaContext
+
+from src.core.resources_mgr import ResourcesMgr
+from src.domain.hello_msg import HelloMsg
+from src.domain.hello_msg_dao import HelloMsgDao
 
 logger = logging.getLogger()
 print("create dynamodb resources")
 resources_mgr = ResourcesMgr()
 
 
-def create_hello_msg(event, context):
+def create_hello_msg(event: dict, _context: LambdaContext) -> dict:
     print(event)
 
     body = json.loads(event["body"])
@@ -32,7 +34,7 @@ def create_hello_msg(event, context):
     }
 
 
-def find_hello_msg(event, context):
+def find_hello_msg(event: dict, _context: LambdaContext) -> dict:
     print(event)
 
     dao = HelloMsgDao(
@@ -41,10 +43,17 @@ def find_hello_msg(event, context):
         table_name=resources_mgr.table_name(),
     )
 
-    entities = dao.find_by_uuid(event["pathParameters"]["uuid"])
+    entity = dao.find_by_uuid(event["pathParameters"]["uuid"])
+
+    if entity is None:
+        return {
+            "statusCode": 404,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"message": "Entity not found"}),
+        }
 
     return {
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(entities, default=lambda entity: entity.to_json()),
+        "body": entity.to_json(),
     }

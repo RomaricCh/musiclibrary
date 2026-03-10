@@ -18,6 +18,11 @@ locals {
   lambda_find_function_name   = "${local.name_prefix}-find-hello-msg"
   lambda_create_function_name = "${local.name_prefix}-create-hello-msg"
 
-  # Lambda source path (relative to tf directory)
-  lambda_source_path = "${path.module}/../src"
+  # Hash des fichiers sources des Lambdas (src/ + dépendances) pour détecter
+  # les changements de code.
+  lambda_source_hash = sha256(join("", concat(
+    [for f in sort(fileset("${path.module}/../src", "**/*.py")) : filesha256("${path.module}/../src/${f}")],
+    [filesha256("${path.module}/../pyproject.toml")],
+    [filesha256("${path.module}/../uv.lock")]
+  )))
 }

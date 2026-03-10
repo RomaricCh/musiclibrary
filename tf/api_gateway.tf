@@ -12,7 +12,7 @@ resource "aws_api_gateway_rest_api" "main" {
 
   # Import OpenAPI specification with variable substitution
   body = templatefile("${path.module}/../spec/api-spec-terraform.yaml", {
-    aws_region                  = data.aws_region.current.name
+    aws_region                  = var.aws_region
     find_hello_msg_lambda_arn   = aws_lambda_function.find_hello_msg.invoke_arn
     create_hello_msg_lambda_arn = aws_lambda_function.create_hello_msg.invoke_arn
   })

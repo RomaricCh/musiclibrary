@@ -13,7 +13,7 @@ aws_region   = "eu-west-1"
 # Lambda Configuration
 # -----------------------------------------------------------------------------
 
-lambda_runtime     = "python3.11"
+lambda_runtime     = "python3.14"
 lambda_timeout     = 30
 lambda_memory_size = 256
 

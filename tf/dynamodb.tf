@@ -2,7 +2,7 @@
 # DynamoDB Table
 # =============================================================================
 
-resource "aws_dynamodb_table" "helloworld" {
+resource "aws_dynamodb_table" "this" {
   name         = local.dynamodb_table_name
   billing_mode = var.dynamodb_billing_mode
 
@@ -25,7 +25,5 @@ resource "aws_dynamodb_table" "helloworld" {
     enabled = true
   }
 
-  tags = merge(local.common_tags, {
-    Name = local.dynamodb_table_name
-  })
+  tags = local.common_tags
 }

@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-from core.resources_mgr import ResourcesMgr
-from domain.hello_msg import HelloMsg
-from domain.hello_msg_dao import HelloMsgDao
+from src.core.resources_mgr import ResourcesMgr
+from src.domain.hello_msg import HelloMsg
+from src.domain.hello_msg_dao import HelloMsgDao
 
 resources_mgr = ResourcesMgr()
 
 
-def book_dao_test():
+def book_dao_test() -> HelloMsgDao:
     return HelloMsgDao(
         dynamodb_resource=resources_mgr.dynamodb_resource,
         dynamodb_client=resources_mgr.dynamodb_client,
@@ -15,8 +14,7 @@ def book_dao_test():
 
 
 class TestBookDao:
-
-    def test_find_book_by_uuid_should_return_hello_msg_when_it_exists(self):
+    def test_find_book_by_uuid_should_return_hello_msg_when_it_exists(self) -> None:
         # given
         book_dao = book_dao_test()
         book = HelloMsg(language="fr", value="bonjour tout le monde")
@@ -30,8 +28,8 @@ class TestBookDao:
         book_dao.delete(uuid=book.uuid)
 
     def test_find_book_by_uuid_should_return_none_when_not_it_exists(
-            self,
-    ):
+        self,
+    ) -> None:
         # given
 
         # when

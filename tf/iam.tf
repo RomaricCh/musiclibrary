@@ -8,8 +8,6 @@
 
 data "aws_caller_identity" "current" {}
 
-data "aws_region" "current" {}
-
 # -----------------------------------------------------------------------------
 # Lambda Execution Role
 # -----------------------------------------------------------------------------
@@ -31,9 +29,7 @@ resource "aws_iam_role" "lambda_execution" {
   name               = "${local.name_prefix}-lambda-execution-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 
-  tags = merge(local.common_tags, {
-    Name = "${local.name_prefix}-lambda-execution-role"
-  })
+  tags = local.common_tags
 }
 
 # -----------------------------------------------------------------------------
@@ -50,7 +46,7 @@ data "aws_iam_policy_document" "lambda_cloudwatch_logs" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.name_prefix}*:*"
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.name_prefix}*:*"
     ]
   }
 }
@@ -85,8 +81,8 @@ data "aws_iam_policy_document" "lambda_dynamodb" {
       "dynamodb:Scan"
     ]
     resources = [
-      aws_dynamodb_table.helloworld.arn,
-      "${aws_dynamodb_table.helloworld.arn}/index/*"
+      aws_dynamodb_table.this.arn,
+      "${aws_dynamodb_table.this.arn}/index/*"
     ]
   }
 }
