@@ -3,12 +3,12 @@ import logging
 from mypy_boto3_dynamodb.client import DynamoDBClient
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from src.domain.hello_msg import HelloMsg
+from src.domain.song import Song
 
 logger = logging.getLogger()
 
 
-class HelloMsgDao:
+class SongDao:
     def __init__(
         self,
         dynamodb_resource: DynamoDBServiceResource,
@@ -19,7 +19,7 @@ class HelloMsgDao:
         self.dynamodb_client = dynamodb_client
         self.table = self.dynamodb_resource.Table(table_name)
 
-    def create(self, entity: HelloMsg) -> None:
+    def create(self, entity: Song) -> None:
         logger.info("[entity] create")
         self.table.put_item(Item=entity.to_dict())
 
@@ -30,12 +30,12 @@ class HelloMsgDao:
 
         return
 
-    def find_by_uuid(self, uuid: str) -> HelloMsg | None:
+    def find_by_uuid(self, uuid: str) -> Song | None:
         logger.info("[entity] entity")
         result = self.table.get_item(Key={"uuid": uuid})
 
         print(result)
 
         if "Item" in result:
-            return HelloMsg(**result["Item"])
+            return Song(**result["Item"])
         return None

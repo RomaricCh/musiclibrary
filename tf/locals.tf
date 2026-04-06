@@ -15,8 +15,8 @@ locals {
   dynamodb_table_name = local.name_prefix
 
   # Lambda function names
-  lambda_find_function_name   = "${local.name_prefix}-find-hello-msg"
-  lambda_create_function_name = "${local.name_prefix}-create-hello-msg"
+  lambda_find_function_name   = "${local.name_prefix}-find-song"
+  lambda_create_function_name = "${local.name_prefix}-create-song"
 
   # Hash des fichiers sources des Lambdas (src/ + dépendances) pour détecter
   # les changements de code.

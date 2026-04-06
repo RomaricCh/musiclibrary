@@ -12,9 +12,9 @@ resource "aws_api_gateway_rest_api" "main" {
 
   # Import OpenAPI specification with variable substitution
   body = templatefile("${path.module}/../spec/api-spec-terraform.yaml", {
-    aws_region                  = var.aws_region
-    find_hello_msg_lambda_arn   = aws_lambda_function.find_hello_msg.invoke_arn
-    create_hello_msg_lambda_arn = aws_lambda_function.create_hello_msg.invoke_arn
+    aws_region             = var.aws_region
+    find_song_lambda_arn   = aws_lambda_function.find_song.invoke_arn
+    create_song_lambda_arn = aws_lambda_function.create_song.invoke_arn
   })
 
   endpoint_configuration {
@@ -38,7 +38,7 @@ resource "aws_api_gateway_rest_api" "main" {
 resource "aws_lambda_permission" "api_gateway_create" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.create_hello_msg.function_name
+  function_name = aws_lambda_function.create_song.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
@@ -46,7 +46,7 @@ resource "aws_lambda_permission" "api_gateway_create" {
 resource "aws_lambda_permission" "api_gateway_find" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.find_hello_msg.function_name
+  function_name = aws_lambda_function.find_song.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }

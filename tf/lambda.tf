@@ -22,14 +22,14 @@ resource "null_resource" "build_lambda" {
 # CloudWatch Log Groups (créés explicitement pour contrôler la rétention)
 # -----------------------------------------------------------------------------
 
-resource "aws_cloudwatch_log_group" "find_hello_msg" {
+resource "aws_cloudwatch_log_group" "find_song" {
   name              = "/aws/lambda/${local.lambda_find_function_name}"
   retention_in_days = 14
 
   tags = local.common_tags
 }
 
-resource "aws_cloudwatch_log_group" "create_hello_msg" {
+resource "aws_cloudwatch_log_group" "create_song" {
   name              = "/aws/lambda/${local.lambda_create_function_name}"
   retention_in_days = 14
 
@@ -37,15 +37,15 @@ resource "aws_cloudwatch_log_group" "create_hello_msg" {
 }
 
 # -----------------------------------------------------------------------------
-# Lambda Function: Find Hello Message
+# Lambda Function: Find Song
 # -----------------------------------------------------------------------------
 
-resource "aws_lambda_function" "find_hello_msg" {
+resource "aws_lambda_function" "find_song" {
   function_name = local.lambda_find_function_name
-  description   = "Lambda function to find a hello message by UUID"
+  description   = "Lambda function to find a song by UUID"
 
   role    = aws_iam_role.lambda_execution.arn
-  handler = "src.handler.find_hello_msg"
+  handler = "src.handler.find_song"
   runtime = var.lambda_runtime
 
   # On pointe vers l'archive générée à la racine du projet
@@ -71,15 +71,15 @@ resource "aws_lambda_function" "find_hello_msg" {
 }
 
 # -----------------------------------------------------------------------------
-# Lambda Function: Create Hello Message
+# Lambda Function: Create Song
 # -----------------------------------------------------------------------------
 
-resource "aws_lambda_function" "create_hello_msg" {
+resource "aws_lambda_function" "create_song" {
   function_name = local.lambda_create_function_name
-  description   = "Lambda function to create a new hello message"
+  description   = "Lambda function to create a new song"
 
   role    = aws_iam_role.lambda_execution.arn
-  handler = "src.handler.create_hello_msg"
+  handler = "src.handler.create_song"
   runtime = var.lambda_runtime
 
   # On pointe vers l'archive générée à la racine du projet

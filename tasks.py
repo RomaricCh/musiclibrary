@@ -8,7 +8,7 @@ import sys
 from invoke import task
 
 def _project_name():
-    return "helloworld"
+    return "musiclibrary"
 
 def _pty():
     if platform.system() == "Windows":
