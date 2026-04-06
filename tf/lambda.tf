@@ -36,6 +36,13 @@ resource "aws_cloudwatch_log_group" "create_song" {
   tags = local.common_tags
 }
 
+resource "aws_cloudwatch_log_group" "delete_song" {
+  name              = "/aws/lambda/${local.lambda_delete_function_name}"
+  retention_in_days = 14
+
+  tags = local.common_tags
+}
+
 # -----------------------------------------------------------------------------
 # Lambda Function: Find Song
 # -----------------------------------------------------------------------------
@@ -80,6 +87,40 @@ resource "aws_lambda_function" "create_song" {
 
   role    = aws_iam_role.lambda_execution.arn
   handler = "src.handler.create_song"
+  runtime = var.lambda_runtime
+
+  # On pointe vers l'archive générée à la racine du projet
+  filename         = "${path.module}/../lambda_function_payload.zip"
+  source_code_hash = local.lambda_source_hash
+
+  memory_size = var.lambda_memory_size
+  timeout     = var.lambda_timeout
+
+  environment {
+    variables = {
+      TABLE_NAME  = aws_dynamodb_table.this.name
+      ENVIRONMENT = var.stage
+      LOG_LEVEL   = "INFO"
+    }
+  }
+
+  tags = local.common_tags
+
+  depends_on = [
+    null_resource.build_lambda # on attend que le build soit terminé
+  ]
+}
+
+# -----------------------------------------------------------------------------
+# Lambda Function: Delete Song
+# -----------------------------------------------------------------------------
+
+resource "aws_lambda_function" "delete_song" {
+  function_name = local.lambda_delete_function_name
+  description   = "Lambda function to delete a song"
+
+  role    = aws_iam_role.lambda_execution.arn
+  handler = "src.handler.delete_song"
   runtime = var.lambda_runtime
 
   # On pointe vers l'archive générée à la racine du projet

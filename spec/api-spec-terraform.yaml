@@ -1,7 +1,7 @@
 openapi: "3.0.1"
 info:
   version: "1"
-  title: "Helloworld documentation"
+  title: "songs documentation"
 
 servers:
   - url: "https://{api_id}.execute-api.${aws_region}.amazonaws.com/live"
@@ -11,21 +11,21 @@ servers:
         description: set api id
 
 paths:
-  /helloworld:
+  /songs:
     post:
-      summary: "Create a Helloworld translation"
+      summary: "Create a song"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Helloworld"
+              $ref: "#/components/schemas/Song"
       responses:
         "201":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Helloworld"
+                $ref: "#/components/schemas/Song"
       security:
         - sigv4: []
       x-amazon-apigateway-request-validator: validate_request
@@ -38,12 +38,16 @@ paths:
         httpMethod: POST
         type: aws_proxy
 
-  /helloworld/{uuid}:
     get:
-      summary: "Find helloworld translation by uuid"
+      summary: "Get a song by author and title"
       parameters:
-        - in: path
-          name: uuid
+        - in: query
+          name: author
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: title
           required: true
           schema:
             type: string
@@ -53,27 +57,63 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Helloworld"
+                $ref: "#/components/schemas/Song"
+      security:
+        - sigv4: [ ]
+      x-amazon-apigateway-request-validator: validate_request
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "201"
+        uri: "${find_song_lambda_arn}"
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+
+  /songs/{uuid}:
+    delete:
+      summary: "Delete song by uuid"
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
       security:
         - sigv4: []
       x-amazon-apigateway-integration:
         responses:
           default:
             statusCode: "200"
-        uri: "${find_song_lambda_arn}"
+        uri: "${delete_song_lambda_arn}"
         passthroughBehavior: when_no_match
         httpMethod: POST
         type: aws_proxy
 
 components:
   schemas:
-    Helloworld:
+    Song:
       type: object
       properties:
-        language:
+        author:
           type: string
-        value:
+        title:
           type: string
+        genre:
+          type: string
+        date:
+          type: string
+        uuid:
+          type: string
+    Empty:
+      type: string
 
   securitySchemes:
     sigv4:

@@ -43,7 +43,10 @@ def find_song(event: dict, _context: LambdaContext) -> dict:
         table_name=resources_mgr.table_name(),
     )
 
-    entity = dao.find_by_uuid(event["pathParameters"]["uuid"])
+    entity = dao.find_song_by_author_and_title(
+        author=event["queryStringParameters"]["author"],
+        title=event["queryStringParameters"]["title"],
+    )
 
     if entity is None:
         return {
@@ -57,3 +60,17 @@ def find_song(event: dict, _context: LambdaContext) -> dict:
         "headers": {"Content-Type": "application/json"},
         "body": entity.to_json(),
     }
+
+
+def delete_song(event: dict, _context: LambdaContext) -> dict:
+    print(event)
+
+    dao = SongDao(
+        dynamodb_resource=resources_mgr.dynamodb_resource,
+        dynamodb_client=resources_mgr.dynamodb_client,
+        table_name=resources_mgr.table_name(),
+    )
+
+    dao.delete(event["pathParameters"]["uuid"])
+
+    return {"statusCode": 204, "headers": {"Content-Type": "application/json"}, "body": ""}

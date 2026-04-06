@@ -15,6 +15,7 @@ resource "aws_api_gateway_rest_api" "main" {
     aws_region             = var.aws_region
     find_song_lambda_arn   = aws_lambda_function.find_song.invoke_arn
     create_song_lambda_arn = aws_lambda_function.create_song.invoke_arn
+    delete_song_lambda_arn = aws_lambda_function.delete_song.invoke_arn
   })
 
   endpoint_configuration {
@@ -50,6 +51,15 @@ resource "aws_lambda_permission" "api_gateway_find" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
+
+resource "aws_lambda_permission" "api_gateway_delete" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_song.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
+}
+
 
 # -----------------------------------------------------------------------------
 # API Gateway Deployment

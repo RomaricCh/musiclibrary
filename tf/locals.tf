@@ -17,6 +17,7 @@ locals {
   # Lambda function names
   lambda_find_function_name   = "${local.name_prefix}-find-song"
   lambda_create_function_name = "${local.name_prefix}-create-song"
+  lambda_delete_function_name = "${local.name_prefix}-delete-song"
 
   # Hash des fichiers sources des Lambdas (src/ + dépendances) pour détecter
   # les changements de code.
