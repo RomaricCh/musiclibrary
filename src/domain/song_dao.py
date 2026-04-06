@@ -1,5 +1,6 @@
 import logging
 
+from boto3.dynamodb.conditions import Key
 from mypy_boto3_dynamodb.client import DynamoDBClient
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
@@ -26,16 +27,34 @@ class SongDao:
     def delete(self, uuid: str) -> None:
         logger.info("[entity] delete")
 
-        self.table.delete_item(Key={"uuid": uuid})
+        song = self.find_by_uuid(uuid=uuid)
+
+        if song is not None:
+            self.table.delete_item(Key={"author": song.author, "title": song.title})
 
         return
 
     def find_by_uuid(self, uuid: str) -> Song | None:
         logger.info("[entity] entity")
-        result = self.table.get_item(Key={"uuid": uuid})
+        result = self.table.query(
+            IndexName="indexByUuid", KeyConditionExpression=Key("uuid").eq(uuid)
+        )
 
-        print(result)
+        if len(result["Items"]) == 1:
+            return Song(**result["Items"][0])
+        return None
+
+    def find_song_by_author_and_title(self, author: str, title: str) -> Song | None:
+        result = self.table.get_item(Key={"author": author, "title": title})
 
         if "Item" in result:
             return Song(**result["Item"])
         return None
+
+    def find_songs_by_author_and_date(self, author: str, date: str) -> list[Song]:
+        result_query = self.table.query(
+            IndexName="indexByAuthorAndDate",
+            KeyConditionExpression=Key("author").eq(author) & Key("date").eq(date),
+        )
+
+        return [Song(**song) for song in result_query["Items"]]
